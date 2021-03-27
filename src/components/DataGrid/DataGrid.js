@@ -1,21 +1,48 @@
+import { format } from "date-fns";
 import React, { useMemo } from "react";
-import { usePagination, useSortBy, useTable } from "react-table";
+import {
+  useGlobalFilter,
+  usePagination,
+  useSortBy,
+  useTable,
+} from "react-table";
 import "./DataGrid.css";
+import { GlobalFilter } from "./GlobalFilter";
 
 function getColumns(parsedData) {
-  return parsedData.columns.map((c) => {
+  const columns = Object.keys(parsedData[0]);
+  return columns.map((c) => {
     return {
       Header: c,
       Footer: c,
       accessor: c,
       sticky: "left",
+      Cell: ({ value }) => {
+        if (value === null || value === undefined) {
+          return "";
+        }
+        if (value instanceof Date) {
+          return format(value, "yyyy-MM-dd HH:mm:ss");
+        }
+
+        if (typeof value === "string") {
+          return value;
+        }
+
+        if (!isNaN(value)) {
+          return value;
+        }
+
+        return value.toString();
+      },
     };
   });
 }
 
 function DataGrid({ tableData }) {
   const columns = useMemo(() => getColumns(tableData), [tableData]);
-
+  console.log(columns);
+  console.log(tableData);
   const {
     getTableProps,
     getTableBodyProps,
@@ -31,19 +58,22 @@ function DataGrid({ tableData }) {
     pageCount,
     setPageSize,
     prepareRow,
+    setGlobalFilter,
   } = useTable(
     {
       columns,
       data: tableData,
-      initialState: { pageIndex: 1 },
+      initialState: { pageIndex: 0, pageSize: 5 },
     },
+    useGlobalFilter,
     useSortBy,
     usePagination
   );
-  const { pageIndex, pageSize } = state;
+  const { pageIndex, pageSize, globalFilter } = state;
 
   return (
     <>
+      <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -52,11 +82,7 @@ function DataGrid({ tableData }) {
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render("Header")}
                   <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
+                    {column.isSorted ? (column.isSortedDesc ? "🔽" : "🔼") : ""}
                   </span>
                 </th>
               ))}
@@ -115,7 +141,7 @@ function DataGrid({ tableData }) {
           value={pageSize}
           onChange={(e) => setPageSize(Number(e.target.value))}
         >
-          {[10, 25, 50].map((pageSize) => (
+          {[5, 10, 20, 30, 40, 50, 100, 150, 200, 250].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>

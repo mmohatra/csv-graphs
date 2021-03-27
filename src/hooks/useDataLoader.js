@@ -1,17 +1,22 @@
-import { csvParse } from "d3";
 import { useState } from "react";
 
 export function useDataLoader() {
-  const [loadingError, setLoadingError] = useState(null);
   const [tableData, setTableData] = useState(null);
-  const [tableColumns, setTableColumns] = useState([]);
+  const [filteredTableData, setFilteredTableData] = useState(null);
 
   const setData = (data) => {
-    const td = csvParse(data);
-    const cols = td.columns;
-    console.log(cols);
-    setTableData(td);
+    setTableData(data);
   };
 
-  return { setData, setLoadingError, tableData, setTableData };
+  const setFilteredData = (data) => {
+    setFilteredTableData(data);
+    console.log("Set filtered data");
+  };
+
+  return {
+    setData,
+    tableData,
+    filteredTableData,
+    setFilteredData,
+  };
 }

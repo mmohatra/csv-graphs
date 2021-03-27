@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { csvParse } from "d3";
 import React, { useCallback } from "react";
 import { Alert, Button, Col, Row } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
@@ -10,8 +11,7 @@ function UploadFile({ setData, setLoadingError }) {
       acceptedFiles.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (event) => {
-          // parseData(event.target.result);
-          setData(event.target.result);
+          setData(csvParse(event.target.result));
         };
         reader.onerror = (error) => {
           console.log(error);
@@ -30,8 +30,7 @@ function UploadFile({ setData, setLoadingError }) {
     isDragAccept,
   } = useDropzone({
     onDrop,
-    accept:
-      "text/csv,text/plain,application/json,text/tsv,text/tab-separated-values",
+    accept: "text/csv",
     maxFiles: 1,
   });
 

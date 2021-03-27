@@ -5,7 +5,7 @@ import { BsUpload } from "react-icons/bs";
 import UploadFile from "../UploadFile/UploadFile";
 import styles from "./DataLoader.module.scss";
 
-function Dataloader({ setData, setLoadingError, setLoading }) {
+function Dataloader({ setData, setLoadingError }) {
   const [optionIndex, setOptionIndex] = useState(0);
 
   const options = [
