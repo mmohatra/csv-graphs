@@ -21,6 +21,7 @@ function getColumns(parsedData) {
         if (value === null || value === undefined) {
           return "";
         }
+
         if (value instanceof Date) {
           return format(value, "yyyy-MM-dd HH:mm:ss");
         }

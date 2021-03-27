@@ -24,7 +24,7 @@ function DataEditor({ tableData, setFilteredData }) {
   const editorOptions = {
     sql: {
       editor: <SQLEditor ref={editorRef} />,
-      message: "ALA SQL Query Editor",
+      message: "ALA SQL Editor(Deprecated)",
       inputs: [
         {
           name: "data",
@@ -47,7 +47,7 @@ function DataEditor({ tableData, setFilteredData }) {
 
     js: {
       editor: <JSEditor ref={editorRef} />,
-      message: "JS Editor",
+      message: "JavaScript Editor",
       inputs: [
         {
           name: "data",
