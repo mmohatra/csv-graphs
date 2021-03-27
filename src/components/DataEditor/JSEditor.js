@@ -9,7 +9,10 @@ require("prismjs/components/prism-clike");
 require("prismjs/components/prism-javascript");
 
 const JSEditor = React.forwardRef((props, ref) => {
-  const [code, setCode] = useState("return data;");
+  const [code, setCode] = useState(`return data.map(d=>{
+  return d;
+});
+  `);
 
   return (
     <Col md={12}>

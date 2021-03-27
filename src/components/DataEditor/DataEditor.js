@@ -33,7 +33,15 @@ function DataEditor({ tableData, setFilteredData }) {
         },
       ],
       processor: (data, code) => {
-        return data;
+        const whatCount = (code.match(/\?/g) || []).length;
+        const args = [];
+        for (let i = 0; i < whatCount; i++) {
+          args.push(data);
+        }
+
+        console.log("SQL Editor: ", data);
+        console.log("What count:", whatCount);
+        return alasql(code, args);
       },
     },
 
