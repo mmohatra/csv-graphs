@@ -10,7 +10,6 @@ export function useDataLoader() {
 
   const setFilteredData = (data) => {
     setFilteredTableData(data);
-    console.log("Set filtered data");
   };
 
   return {

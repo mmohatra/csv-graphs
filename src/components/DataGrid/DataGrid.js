@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import React, { useMemo } from "react";
+import { Col, Row } from "react-bootstrap";
 import {
   useGlobalFilter,
   usePagination,
@@ -74,7 +75,11 @@ function DataGrid({ tableData }) {
 
   return (
     <>
-      <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+      <Row>
+        <Col md={3}>
+          <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+        </Col>
+      </Row>
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (

@@ -1,5 +1,6 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
-import { Col, Row } from "react-bootstrap";
+import { Badge, Col, Row } from "react-bootstrap";
 import "./App.css";
 import DataEditor from "./components/DataEditor/DataEditor";
 import DataGrid from "./components/DataGrid/DataGrid";
@@ -7,7 +8,11 @@ import Dataloader from "./components/DataLoader/Dataloader";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import Section from "./components/Section/Section";
+import VegaEditor from "./components/VegaEditor/VegaEditor";
 import { useDataLoader } from "./hooks/useDataLoader";
+
+const editorSize = 4;
+const viewerSize = 8;
 
 function App() {
   const {
@@ -26,24 +31,70 @@ function App() {
           <Dataloader setData={setData} />
         </Section>
         {tableData != null && (
-          <Section title={"Data Pipeline"} loading={false}>
+          <Section title={"Data"} loading={false}>
             <Row>
-              <Col md={3}>
+              <Col md={editorSize}>
                 <DataEditor
                   tableData={tableData}
                   setFilteredData={setFilteredData}
                 />
               </Col>
-              <Col md={9}>
-                <DataGrid tableData={tableData} />
+
+              <Col md={viewerSize}>
+                <Row className="datagridContainer">
+                  <Col md={12}>
+                    <DataGrid tableData={tableData} />
+                    <h2 style={{ position: "absolute", right: 0, top: 0 }}>
+                      <Badge variant="danger">Raw</Badge>
+                    </h2>
+                  </Col>
+                </Row>
+
+                {filteredTableData !== null && filteredTableData !== tableData && (
+                  <>
+                    <Row
+                      style={{ marginTop: 4, marginBottom: 4, height: 10 }}
+                    ></Row>
+
+                    <Row className="datagridContainer">
+                      <Col md={12}>
+                        <DataGrid tableData={filteredTableData} />
+                        <h2 style={{ position: "absolute", right: 0, top: 0 }}>
+                          <button
+                            type="button"
+                            class="close"
+                            aria-label="Close"
+                            onClick={() => setFilteredData(null)}
+                          >
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </h2>
+                      </Col>
+                    </Row>
+                  </>
+                )}
               </Col>
             </Row>
           </Section>
         )}
 
-        {filteredTableData !== null && filteredTableData !== tableData && (
-          <Section title={"Processed Data"} loading={false}>
-            <DataGrid tableData={filteredTableData} />
+        {tableData !== null && (
+          <Section title={"Visualization"} loading={false}>
+            <Row>
+              <Col md={editorSize}>
+                <VegaEditor />
+              </Col>
+              <Col md={viewerSize} className="datagridContainer">
+                <DataGrid
+                  tableData={
+                    filteredTableData != null ? filteredTableData : tableData
+                  }
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col md={12}></Col>
+            </Row>
           </Section>
         )}
       </div>

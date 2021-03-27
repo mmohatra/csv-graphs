@@ -24,7 +24,7 @@ function DataEditor({ tableData, setFilteredData }) {
   const editorOptions = {
     sql: {
       editor: <SQLEditor ref={editorRef} />,
-      message: "ALA SQL Editor(Deprecated)",
+      message: "ALA SQL Pipeline(Deprecated)",
       inputs: [
         {
           name: "data",
@@ -47,7 +47,7 @@ function DataEditor({ tableData, setFilteredData }) {
 
     js: {
       editor: <JSEditor ref={editorRef} />,
-      message: "JavaScript Editor",
+      message: "JavaScript Pipeline",
       inputs: [
         {
           name: "data",
@@ -101,21 +101,18 @@ function DataEditor({ tableData, setFilteredData }) {
       setError((e) => null);
       setFilteredData(filteredData);
     } catch (e) {
+      setFilteredData(null);
       setError(e);
       console.log(e);
     }
   };
 
   return (
-    <div className="h-100 d-flex flex-column">
+    <div className="h-100 d-flex flex-column dataEditor">
       <Row className="justify-content-center">
         <Col md={12}>
           <Dropdown>
-            <Dropdown.Toggle
-              variant="success"
-              id="dropdown-basic"
-              className="dropdownButton"
-            >
+            <Dropdown.Toggle variant="primary" className="dropdownButton">
               {currentEditor.message}
             </Dropdown.Toggle>
             <Dropdown.Menu>
@@ -158,7 +155,7 @@ function DataEditor({ tableData, setFilteredData }) {
       <Row>
         <Col md={12}>
           <Button
-            variant="primary"
+            variant="success"
             block
             onClick={() => filterData(editorRef.current)}
           >
@@ -186,11 +183,7 @@ function DataEditor({ tableData, setFilteredData }) {
               <strong className="mr-auto">Error</strong>
               <small>Just now</small>
             </Toast.Header>
-            <Toast.Body>
-              Error compiling script...
-              <br />
-              {error.toString()}
-            </Toast.Body>
+            <Toast.Body>{error.toString()}</Toast.Body>
           </Toast>
         </>
       )}

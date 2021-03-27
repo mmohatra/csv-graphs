@@ -1,0 +1,10 @@
+.jsEditor {
+  height: 100%;
+  border-style: dotted;
+  border-width: 1px;
+  border-color: rgb(39, 155, 39);
+  border-bottom: 0px;
+  border-radius: 4px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
