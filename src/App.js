@@ -8,7 +8,6 @@ import Dataloader from "./components/DataLoader/Dataloader";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import Section from "./components/Section/Section";
-import DataTypeSelection from "./components/VegaEditor/FieldSelection/DataTypeSelection";
 import VegaViz from "./components/VegaViz/VegaViz";
 import { useDataLoader } from "./hooks/useDataLoader";
 
@@ -92,7 +91,10 @@ function App() {
         )}
       </div>
 
-      <DataTypeSelection></DataTypeSelection>
+      {/* <DataTypeSelection
+        selectTypes={["Q", "N"]}
+        onValueChanged={(oldValue, newValue) => console.log(oldValue, newValue)}
+      ></DataTypeSelection> */}
       <Footer />
     </div>
   );

@@ -1,9 +1,47 @@
 .data-type-selector-trigger {
-  background-color: var(--gray-400);
+  background-color: #e4e3e3;
   border-radius: 50%;
   height: 24px;
   width: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.data-type-selected {
+  background-color: #defff0;
+}
+
+.data-type-selector-overlay {
+  background-color: #fff;
+  min-width: 140px;
+  box-shadow: 0 6px 12px rgb(0 0 0 / 30%);
+  z-index: 10000;
+}
+
+.data-type-select-item {
+  padding: 8px;
+  /* padding-bottom: 0px; */
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.data-type-select-item:hover {
+  background-color: #dee1e2;
+}
+
+.no-margin-hr {
+  margin: 0px;
+}
+
+.data-type-selector-icon {
+  background-color: #e4e3e3;
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px;
 }
