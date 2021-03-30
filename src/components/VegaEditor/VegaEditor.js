@@ -12,15 +12,48 @@ import {
 import "./VegaEditor.css";
 import VegaLiteAPIEditor from "./VegaLiteAPIEditor";
 
-function VegaEditor({ data }) {
+const vl = require("vega-lite-api");
+
+function VegaEditor({ data, setSpec }) {
   const [editorLanguage, setEditorLanguage] = useState("vegaLiteApi");
   const [error, setError] = useState(null);
   const editorRef = useRef(null);
 
   const editorOptions = {
     vegaLiteApi: {
-      editor: <VegaLiteAPIEditor ref={editorRef} />,
-      processor: (editor) => {},
+      editor: VegaLiteAPIEditor,
+      processor: () => {
+        const code = editorRef.current.props.value;
+        try {
+          const func = new Function("vl", code);
+          const specs = func(vl)
+            .autosize({ type: "fit", contains: "padding" })
+            .config({
+              axis: {
+                domain: false,
+                tickColor: "lightGray",
+              },
+              style: {
+                "guide-label": {
+                  fontSize: 15,
+                  fill: "#3e3c38",
+                },
+                "guide-title": {
+                  fontSize: 15,
+                  fill: "#3e3c38",
+                },
+              },
+            });
+
+          console.log("Specs ", specs.toString());
+          if (specs !== null && specs !== undefined) {
+            const visSpec = JSON.parse(specs.toString());
+            setSpec(visSpec);
+          }
+        } catch (e) {
+          setError(e);
+        }
+      },
       message: "Vega Lite API editor",
       inputs: [
         {
@@ -77,13 +110,28 @@ function VegaEditor({ data }) {
                 )}
               </OverlayTrigger>
             ))}
+            {Object.keys(data[0]).map((i) => {
+              return (
+                <Badge pill variant="danger">
+                  {i}
+                </Badge>
+              );
+            })}
           </p>
         </Col>
       </Row>
-      <Row className="flex-grow-1">{currentEditor.editor}</Row>
+      <Row className="flex-grow-1">
+        {<currentEditor.editor ref={editorRef} />}
+      </Row>
       <Row>
         <Col md={12}>
-          <Button variant="primary" block>
+          <Button
+            variant="primary"
+            block
+            onClick={() => {
+              currentEditor.processor();
+            }}
+          >
             Process
           </Button>
         </Col>

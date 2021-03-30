@@ -8,7 +8,8 @@ import Dataloader from "./components/DataLoader/Dataloader";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import Section from "./components/Section/Section";
-import VegaEditor from "./components/VegaEditor/VegaEditor";
+import DataTypeSelection from "./components/VegaEditor/FieldSelection/DataTypeSelection";
+import VegaViz from "./components/VegaViz/VegaViz";
 import { useDataLoader } from "./hooks/useDataLoader";
 
 const editorSize = 4;
@@ -80,24 +81,18 @@ function App() {
 
         {tableData !== null && (
           <Section title={"Visualization"} loading={false}>
-            <Row>
-              <Col md={editorSize}>
-                <VegaEditor />
-              </Col>
-              <Col md={viewerSize} className="datagridContainer">
-                <DataGrid
-                  tableData={
-                    filteredTableData != null ? filteredTableData : tableData
-                  }
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={12}></Col>
-            </Row>
+            <VegaViz
+              data={
+                filteredTableData != null && filteredTableData.length > 0
+                  ? filteredTableData
+                  : tableData
+              }
+            />
           </Section>
         )}
       </div>
+
+      <DataTypeSelection></DataTypeSelection>
       <Footer />
     </div>
   );

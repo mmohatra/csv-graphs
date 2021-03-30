@@ -1,0 +1,9 @@
+.data-type-selector-trigger {
+  background-color: var(--gray-400);
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
