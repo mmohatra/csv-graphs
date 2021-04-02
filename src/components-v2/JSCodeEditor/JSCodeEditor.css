@@ -1,0 +1,30 @@
+.jsCodeEditor {
+  height: 100%;
+
+  border-radius: 4px;
+
+  background-color: #fff;
+  min-width: 140px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+  z-index: 500;
+}
+
+.jsCodeEditor > textarea {
+  border: none;
+  border-radius: 4px;
+}
+
+.btnCircle.btnSm {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  text-align: center;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+}
+
+.floatingCard {
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+  z-index: 500;
+}

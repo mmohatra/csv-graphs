@@ -1,23 +1,24 @@
 import React from "react";
-import function VegaLiteAPITemplateEditor({ data }) {
+
+function VegaLiteAPITemplateEditor({ data }) {
   const cols = Object.keys(data[0]);
 
   const templates = [
     {
-      id: "xyScatter",
-      card: "",
+      id: "X-Y Scatter Plot",
+      tooltip: "",
       help: "",
-      options: [
+      input: [
         {
-          dt: "S['qunatative', ]"
-        }
-      ]
+          inputType: "fieldMap",
+          channel: "x",
+          dataType: ["Q"],
+        },
+      ],
     },
   ];
 
   return <div></div>;
-};
-
-
+}
 
 export default TemplateEditor;

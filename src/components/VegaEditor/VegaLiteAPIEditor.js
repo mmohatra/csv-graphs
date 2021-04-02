@@ -11,7 +11,6 @@ require("prismjs/components/prism-javascript");
 const VegaLiteAPIEditor = React.forwardRef((props, ref) => {
   const [code, setCode] = useState(`return vl
 .markPoint({
-  fill: true,
   size: 900,
   opacity: 0.1
 }).encode(

@@ -1,14 +1,11 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
-import { Badge, Col, Row } from "react-bootstrap";
 import "./App.css";
-import DataEditor from "./components/DataEditor/DataEditor";
-import DataGrid from "./components/DataGrid/DataGrid";
+import DataViewer from "./components-v2/DataViewer/DataViewer";
 import Dataloader from "./components/DataLoader/Dataloader";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import Section from "./components/Section/Section";
-import VegaViz from "./components/VegaViz/VegaViz";
 import { useDataLoader } from "./hooks/useDataLoader";
 
 const editorSize = 4;
@@ -30,7 +27,7 @@ function App() {
         <Section title={"Load data"} loading={false}>
           <Dataloader setData={setData} />
         </Section>
-        {tableData != null && (
+        {/* {tableData != null && (
           <Section title={"Data"} loading={false}>
             <Row>
               <Col md={editorSize}>
@@ -76,9 +73,9 @@ function App() {
               </Col>
             </Row>
           </Section>
-        )}
+        )} */}
 
-        {tableData !== null && (
+        {/* {tableData !== null && (
           <Section title={"Visualization"} loading={false}>
             <VegaViz
               data={
@@ -88,13 +85,15 @@ function App() {
               }
             />
           </Section>
-        )}
+        )} */}
+        {tableData !== null && <DataViewer rawData={tableData} />}
       </div>
 
       {/* <DataTypeSelection
         selectTypes={["Q", "N"]}
         onValueChanged={(oldValue, newValue) => console.log(oldValue, newValue)}
       ></DataTypeSelection> */}
+
       <Footer />
     </div>
   );

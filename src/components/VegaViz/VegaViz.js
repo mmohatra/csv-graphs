@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import VegaEditor from "../VegaEditor/VegaEditor";
 import VegaChart from "./VegaChart";
+import "./VegaViz.css";
 
 function VegaViz({ data }) {
   const [vegaSpecs, setVegaSpecs] = useState([null]);
@@ -27,7 +28,7 @@ function VegaViz({ data }) {
                   }}
                 ></VegaEditor>
               </Col>
-              <Col md={8}>
+              <Col md={8} className="chartContainer">
                 {spec !== null && (
                   <VegaChart
                     data={data}
@@ -43,7 +44,7 @@ function VegaViz({ data }) {
                     style={{ position: "absolute", right: 0, top: 0 }}
                     onClick={() => {
                       const newList = [...vegaSpecs];
-                      newList.push(null);
+                      newList.push(spec);
                       setVegaSpecs(newList);
                     }}
                   >
