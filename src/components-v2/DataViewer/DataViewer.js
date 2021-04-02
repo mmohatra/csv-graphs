@@ -1,10 +1,10 @@
+import { parse } from "date-fns";
 import React, { useState } from "react";
 import { Col, Container, Row, Spinner } from "react-bootstrap";
 import { BsCodeSlash } from "react-icons/bs";
 import JSCodeEditor from "../JSCodeEditor/JSCodeEditor";
 import DataTypeSelector from "./DataTypeSelector";
 import "./DataViewer.css";
-
 export const DT_NOMINAL = "n";
 export const DT_DATE = "d";
 export const DT_QUANTITATIVE = "q";
@@ -16,6 +16,31 @@ function DataViewer(props) {
   const [altColTypes, setAltColTypes] = useState({});
   const [loading, setLoading] = useState(false);
   const [codeEditorActive, setCodeEditorActive] = useState(false);
+  const [dataParsingError, setDataParsingError] = useState(null);
+
+  const mapDataToColTypes = (data, colTypes) => {
+    try {
+      const newData = data.map((d) => {
+        const newD = {
+          ...d,
+        };
+        colTypes.forEach((ct) => {
+          if (ct.type === DT_QUANTITATIVE) {
+            newD[ct.column] = +newD[ct.column];
+          } else if (ct.type === DT_DATE) {
+            newD[ct.column] = parse(newD[ct.column], ct.dateFormat);
+          } else if (ct.type === DT_NOMINAL) {
+            newD[ct.column] = newD[ct.column].toString();
+          }
+        });
+        return newD;
+      });
+      console.log(newData);
+      return newData;
+    } catch (e) {
+      return data;
+    }
+  };
 
   const rawData = props.rawData;
   let allData = processedData !== null ? processedData : rawData;
@@ -161,14 +186,12 @@ function getColumnTypes(data, alternateColumnTypes) {
       column: k,
       type: k in alternateColumnTypes ? alternateColumnTypes[k].type : type,
       dateFormat:
-        k in alternateColumnTypes ? alternateColumnTypes[k].dateFormat : null,
+        k in alternateColumnTypes
+          ? alternateColumnTypes[k].dateFormat
+          : "yyyy-MM-dd HH:mm:ss",
     };
   });
   return ct;
-}
-
-function mapDataToColTypes(data, colTypes) {
-  return data;
 }
 
 export default DataViewer;

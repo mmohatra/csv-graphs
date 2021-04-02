@@ -31,6 +31,10 @@ function DataTypeSelector({ oldColumnType, className, onTypeSelected }) {
   const dataTypeIconDomRef = useRef(null);
   const [dateFormat, setDateFormat] = useState(null);
 
+  React.useEffect(() => {
+    setDateFormat(oldColumnType.dateFormat);
+  }, [oldColumnType]);
+
   const handleTargetClick = React.useCallback(
     (e) => {
       e.stopPropagation();
@@ -102,10 +106,17 @@ function DataTypeSelector({ oldColumnType, className, onTypeSelected }) {
             {"      " + "Quantitative"}
           </div>
           <hr className="no-margin-hr"></hr>
-          <div className="input-group">
+          <div
+            className="input-group"
+            className={
+              DT_DATE === dt.type
+                ? " data-type-selected data-type-select-item"
+                : "data-type-select-item"
+            }
+          >
             <span
-              className="data-type-selector-icon"
-              style={{ marginLeft: 12 }}
+              className="data-type-selector-icon mr-auto"
+              style={{ height: 24, width: 24 }}
             >
               <BsClock />
             </span>
@@ -113,11 +124,7 @@ function DataTypeSelector({ oldColumnType, className, onTypeSelected }) {
               type="text"
               class="form-control"
               id="dateFormat"
-              placeholder={
-                oldColumnType.dateFormat !== null
-                  ? oldColumnType.dateFormat
-                  : "Date format"
-              }
+              placeholder={"Date format"}
               value={dateFormat}
               onChange={(e) => setDateFormat(e.target.value)}
               style={{ border: "none" }}
