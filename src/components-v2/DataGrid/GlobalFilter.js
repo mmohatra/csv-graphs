@@ -6,7 +6,6 @@ export const GlobalFilter = ({ filter, setFilter }) => {
   const onFilterChanged = useDebouncer((value) => setFilter(value), 1000);
 
   React.useEffect(() => {
-    console.log("Here goes value", value);
     onFilterChanged(value);
   }, [onFilterChanged, value]);
 

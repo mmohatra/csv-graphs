@@ -14,7 +14,6 @@ function UploadFile({ setData, setLoadingError }) {
           setData(csvParse(event.target.result));
         };
         reader.onerror = (error) => {
-          console.log(error);
           setLoadingError(error);
         };
         reader.readAsText(file);

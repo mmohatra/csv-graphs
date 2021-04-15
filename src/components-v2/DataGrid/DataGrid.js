@@ -31,7 +31,7 @@ function getColumns(parsedData) {
           return value;
         }
 
-        if (!isNaN(value)) {
+        if (typeof value === "number") {
           return value;
         }
 
@@ -88,7 +88,11 @@ function DataGrid({ tableData }) {
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render("Header")}
                   <span>
-                    {column.isSorted ? (column.isSortedDesc ? "🔽" : "🔼") : ""}
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? " \u2193"
+                        : " \u2191"
+                      : " \u2191\u2193"}
                   </span>
                 </th>
               ))}

@@ -41,10 +41,10 @@
   /* padding-bottom: 0px; */
   display: flex;
   align-items: center;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 .data-type-select-item:hover {
-  background-color: #dee1e2;
+  background-color: #041e27;
 }
 
 .no-margin-hr {

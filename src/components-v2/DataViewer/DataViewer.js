@@ -1,10 +1,14 @@
-import { parse } from "date-fns";
+import { alasql } from "alasql";
+import { format, parse } from "date-fns";
 import React, { useState } from "react";
-import { Col, Container, Row, Spinner } from "react-bootstrap";
+import { Alert, Col, Container, Row, Spinner } from "react-bootstrap";
 import { BsCodeSlash } from "react-icons/bs";
+import DataGrid from "../DataGrid/DataGrid";
+import DataVizGroup from "../DataViz/DataVizGroup";
 import JSCodeEditor from "../JSCodeEditor/JSCodeEditor";
 import DataTypeSelector from "./DataTypeSelector";
 import "./DataViewer.css";
+
 export const DT_NOMINAL = "n";
 export const DT_DATE = "d";
 export const DT_QUANTITATIVE = "q";
@@ -13,32 +17,35 @@ export const DT_QUANTITATIVE = "q";
 function DataViewer(props) {
   const [processedData, setProcessedData] = useState(null);
   const [currentDataKey, setCurrentDataKey] = useState(null);
-  const [altColTypes, setAltColTypes] = useState({});
   const [loading, setLoading] = useState(false);
   const [codeEditorActive, setCodeEditorActive] = useState(false);
-  const [dataParsingError, setDataParsingError] = useState(null);
 
-  const mapDataToColTypes = (data, colTypes) => {
+  const [jsError, setJsError] = useState(null);
+
+  const handleCodeChange = (code) => {
+    console.log(code);
     try {
-      const newData = data.map((d) => {
-        const newD = {
-          ...d,
-        };
-        colTypes.forEach((ct) => {
-          if (ct.type === DT_QUANTITATIVE) {
-            newD[ct.column] = +newD[ct.column];
-          } else if (ct.type === DT_DATE) {
-            newD[ct.column] = parse(newD[ct.column], ct.dateFormat);
-          } else if (ct.type === DT_NOMINAL) {
-            newD[ct.column] = newD[ct.column].toString();
+      const func = new Function("data", "parse", "format", "alasql", code);
+      const data = func(props.rawData, parse, format, alasql);
+      if (!Array.isArray(data) && !isDict(data)) {
+        setJsError("Returned data is not array or dictionary");
+        return;
+      }
+      if (isDict(data)) {
+        const keys = Object.keys(data);
+        for (let i = 0; i < keys.length; i++) {
+          const k = keys[i];
+          if (!Array.isArray(data[k])) {
+            setJsError("Dictionary member is not array.");
+            return;
           }
-        });
-        return newD;
-      });
-      console.log(newData);
-      return newData;
+        }
+      }
+      setProcessedData(data);
+      setJsError(null);
     } catch (e) {
-      return data;
+      console.log(e);
+      setJsError(e.toString());
     }
   };
 
@@ -46,29 +53,16 @@ function DataViewer(props) {
   let allData = processedData !== null ? processedData : rawData;
   if (Array.isArray(allData)) {
     allData = { data: allData };
-    if (allData.data !== rawData) {
-      allData.rawData = rawData;
-    }
   }
 
   const dataKey =
     currentDataKey !== null ? currentDataKey : Object.keys(allData)[0];
 
-  let data = allData[dataKey];
+  const data = allData[dataKey];
 
-  const columnTypes = getColumnTypes(
-    data,
-    dataKey in altColTypes ? altColTypes[dataKey] : {}
-  );
-
-  data = mapDataToColTypes(data, columnTypes);
-
-  const closeAllActiveModels = () => {
-    setCodeEditorActive(false);
-  };
+  const columnTypes = getColumnTypes(data);
 
   const toggleCodeEditor = () => {
-    console.log("Opening code editor");
     setCodeEditorActive(!codeEditorActive);
   };
 
@@ -76,101 +70,98 @@ function DataViewer(props) {
     setCodeEditorActive(false);
   };
 
-  console.log("Passed alternate column", altColTypes);
-
   return (
-    <Container fluid className={["dataViewer", props.className].join(" ")}>
-      <Row>
-        <Col>
-          <div className="d-flex align-items-center mb-3">
-            <h1>View data </h1>
-            {loading && (
-              <Spinner
-                animation="border"
-                variant="primary"
-                style={{
-                  width: "2rem",
-                  height: "2rem",
-                  borderWidth: "2px",
-                  marginLeft: "2rem",
-                }}
-              />
-            )}
-
-            {
-              <select
-                className="browser-default custom-select"
-                style={{ width: "auto", marginLeft: 16 }}
-                onChange={(e) => setCurrentDataKey(e.target.value)}
-              >
-                {Object.keys(allData).map((k) => {
-                  return (
-                    <option key={k} value={k}>
-                      {k}
-                    </option>
-                  );
-                })}
-              </select>
-            }
-
-            {columnTypes.map((ct, i) => {
-              return (
-                <DataTypeSelector
-                  oldColumnType={ct}
-                  className={
-                    i === 0
-                      ? "dataTypeSelectorMargin"
-                      : "dataTypeSelectorSeperator"
-                  }
-                  onTypeSelected={({ type, dateFormat }) => {
-                    console.log(type, dateFormat);
-                    const newAltColTypes = { ...altColTypes };
-                    const newPerDataColTypes =
-                      newAltColTypes[dataKey] !== undefined &&
-                      newAltColTypes[dataKey] !== null
-                        ? newAltColTypes[dataKey]
-                        : {};
-                    newAltColTypes[dataKey] = newPerDataColTypes;
-                    let oldCt = newPerDataColTypes[ct.column];
-                    if (oldCt === undefined || oldCt === null) {
-                      oldCt = {};
-                      newPerDataColTypes[ct.column] = oldCt;
-                    }
-
-                    oldCt.column = ct.column;
-                    oldCt.type = type;
-                    oldCt.dateFormat = dateFormat;
-
-                    setAltColTypes(newAltColTypes);
+    <>
+      <Container fluid className={["section", props.className].join(" ")}>
+        <Row>
+          <Col>
+            <div className="d-flex align-items-center mb-3">
+              <h1>View data </h1>
+              {loading && (
+                <Spinner
+                  animation="border"
+                  variant="primary"
+                  style={{
+                    width: "2rem",
+                    height: "2rem",
+                    borderWidth: "2px",
+                    marginLeft: "2rem",
                   }}
                 />
-              );
-            })}
+              )}
 
-            <button
-              type="button"
-              className="btn btn-secondary ml-auto"
-              onClick={toggleCodeEditor}
-            >
-              <BsCodeSlash />
-            </button>
-          </div>
-          {codeEditorActive && (
-            <JSCodeEditor
-              style={{ position: "absolute", left: 0, top: 0 }}
-              closeEditor={closeCodeEditor}
-              onCodeChange={(code) => {
-                console.log(code);
-              }}
-            />
-          )}
-        </Col>
-      </Row>
-    </Container>
+              {
+                <select
+                  className="browser-default custom-select"
+                  style={{ width: "auto", marginLeft: 16 }}
+                  onChange={(e) => setCurrentDataKey(e.target.value)}
+                >
+                  {Object.keys(allData).map((k) => {
+                    return (
+                      <option key={k} value={k}>
+                        {k}
+                      </option>
+                    );
+                  })}
+                </select>
+              }
+
+              {columnTypes.map((ct, i) => {
+                return (
+                  <DataTypeSelector
+                    oldColumnType={ct}
+                    className={
+                      i === 0
+                        ? "dataTypeSelectorMargin"
+                        : "dataTypeSelectorSeperator"
+                    }
+                  />
+                );
+              })}
+
+              <button
+                type="button"
+                className="btn btn-secondary ml-auto"
+                onClick={toggleCodeEditor}
+              >
+                <BsCodeSlash />
+              </button>
+            </div>
+            <Row>
+              {codeEditorActive && (
+                <Col md={5}>
+                  <JSCodeEditor
+                    jsMessage={
+                      jsError !== null ? (
+                        <Alert variant="danger">{jsError}</Alert>
+                      ) : null
+                    }
+                    style={{ position: "absolute", left: "0", top: "0" }}
+                    closeEditor={closeCodeEditor}
+                    onCodeChange={(code) => {
+                      handleCodeChange(code);
+                    }}
+                  />
+                </Col>
+              )}
+              <Col
+                md={codeEditorActive ? 7 : 12}
+                style={{ overflow: "scroll" }}
+              >
+                <DataGrid tableData={data}></DataGrid>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Container>
+      {allData !== null && allData !== undefined && (
+        <DataVizGroup allData={allData} loading={false} className={""} />
+      )}
+    </>
   );
 }
 
-function getColumnTypes(data, alternateColumnTypes) {
+export function getColumnTypes(data) {
   const row = data[0];
   const keys = Object.keys(data[0]);
   const ct = keys.map((k) => {
@@ -179,19 +170,22 @@ function getColumnTypes(data, alternateColumnTypes) {
       type = DT_DATE;
     } else if (typeof row[k] === "number") {
       type = DT_QUANTITATIVE;
-    } else if (+row[k] === +row[k]) {
-      type = DT_QUANTITATIVE;
     }
     return {
       column: k,
-      type: k in alternateColumnTypes ? alternateColumnTypes[k].type : type,
-      dateFormat:
-        k in alternateColumnTypes
-          ? alternateColumnTypes[k].dateFormat
-          : "yyyy-MM-dd HH:mm:ss",
+      type: type,
     };
   });
   return ct;
+}
+
+export function isDict(v) {
+  return (
+    typeof v === "object" &&
+    v !== null &&
+    !(v instanceof Array) &&
+    !(v instanceof Date)
+  );
 }
 
 export default DataViewer;
