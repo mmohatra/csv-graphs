@@ -1,0 +1,15 @@
+.btnCircle.btnSm {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  text-align: center;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+}
+
+.section {
+  border-bottom: 1px solid var(--light);
+  padding-top: 32px;
+  padding-bottom: 40px;
+  max-width: 1400px;
+}

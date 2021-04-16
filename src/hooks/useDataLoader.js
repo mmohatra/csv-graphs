@@ -1,21 +1,16 @@
 import { useState } from "react";
 
 export function useDataLoader() {
-  const [tableData, setTableData] = useState(null);
-  const [filteredTableData, setFilteredTableData] = useState(null);
+  /* 
+  Array of data format.
+  Data format contains:
+  {
+    data: array of data,
+    pipeline: pipeline specification.
+    vizSpecs: visualization specification.
+  }
+  */
+  const [data, setData] = useState([]);
 
-  const setData = (data) => {
-    setTableData(data);
-  };
-
-  const setFilteredData = (data) => {
-    setFilteredTableData(data);
-  };
-
-  return {
-    setData,
-    tableData,
-    filteredTableData,
-    setFilteredData,
-  };
+  return { data, setData };
 }

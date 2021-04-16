@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { Col } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import { BsUpload } from "react-icons/bs";
-import UploadFile from "../UploadFile/UploadFile";
 import styles from "./DataLoader.module.scss";
+import UploadFile from "./UploadFile/UploadFile";
 
-function Dataloader({ setData, setLoadingError }) {
+function Dataloader({ setData, setLoading }) {
   const [optionIndex, setOptionIndex] = useState(0);
+  const [loadingError, setLoadingError] = useState(null);
 
   const options = [
     {
@@ -15,7 +16,14 @@ function Dataloader({ setData, setLoadingError }) {
       message: "Load CSV, TSV or DSV file",
       icon: BsUpload,
       loader: (
-        <UploadFile setData={setData} setLoadingError={setLoadingError} />
+        <UploadFile
+          setData={(data) => {
+            setData(data);
+            console.log(data);
+          }}
+          setLoadingError={setLoadingError}
+          setLoading={setLoading}
+        />
       ),
     },
   ];
@@ -51,6 +59,9 @@ function Dataloader({ setData, setLoadingError }) {
         </Col>
         <Col md={10}>{options[optionIndex].loader}</Col>
       </Row>
+      {loadingError !== null && (
+        <small className="text-danger">{loadingError}</small>
+      )}
     </>
   );
 }

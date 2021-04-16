@@ -22,7 +22,6 @@ export default function Section(props) {
               />
             )}
           </div>
-
           {props.children}
         </Col>
       </Row>

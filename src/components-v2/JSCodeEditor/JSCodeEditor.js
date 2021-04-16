@@ -12,14 +12,19 @@ require("prismjs/components/prism-markup-templating");
 require("prismjs/components/prism-clike");
 require("prismjs/components/prism-javascript");
 
-const JSCodeEditor = ({ onCodeChange, closeEditor, jsMessage, style }) => {
-  const [code, setCode] = useState("return data;");
+const JSCodeEditor = ({
+  onCodeChange,
+  closeEditor,
+  jsMessage,
+  previousCode,
+}) => {
+  const [code, setCode] = useState(null);
   return (
     <>
       <Row className="jsCodeEditor">
         <Col md={12} style={{ paddingBottom: 8 }}>
           <Editor
-            value={code}
+            value={code !== null ? code : previousCode}
             onValueChange={(code) => setCode(code)}
             highlight={(code) => highlight(code, languages.javascript)}
             padding={10}

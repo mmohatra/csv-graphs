@@ -15,6 +15,12 @@ export const DT_QUANTITATIVE = "q";
 
 // Expects data with size more than 0
 function DataViewer(props) {
+  const [previousCode, setPreviousCode] = useState(`return data.map(d=>{
+  return {
+  ...d
+  }
+});
+  `);
   const [processedData, setProcessedData] = useState(null);
   const [currentDataKey, setCurrentDataKey] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -25,6 +31,7 @@ function DataViewer(props) {
   const handleCodeChange = (code) => {
     console.log(code);
     try {
+      setPreviousCode(code);
       const func = new Function("data", "parse", "format", "alasql", code);
       const data = func(props.rawData, parse, format, alasql);
       if (!Array.isArray(data) && !isDict(data)) {
@@ -141,6 +148,7 @@ function DataViewer(props) {
                     onCodeChange={(code) => {
                       handleCodeChange(code);
                     }}
+                    previousCode={previousCode}
                   />
                 </Col>
               )}

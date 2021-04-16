@@ -14,8 +14,18 @@ function DataViz({ loading, className, allData, children }) {
   const [currentDataKey, setCurrentDataKey] = useState(null);
   const [vegaSpec, setVegaSpec] = useState("");
   const [jsError, setJsError] = useState(null);
+  const [previousCode, setPreviousCode] = useState(`return vl.markPoint({
+  stroke: 'none',
+  size: 900,
+  opacity: 0.1
+})
+.encode(
+
+);
+  `);
 
   const onCodeChange = (code) => {
+    setPreviousCode(code);
     compileVegaLiteAPI(
       code,
       (e) => setJsError(e.toString()),
@@ -104,6 +114,7 @@ function DataViz({ loading, className, allData, children }) {
               }
               onCodeChange={onCodeChange}
               closeEditor={() => setShowCodeEditor(false)}
+              previousCode={previousCode}
             />
           </Col>
         )}

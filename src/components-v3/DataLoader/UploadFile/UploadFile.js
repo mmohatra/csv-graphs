@@ -1,19 +1,23 @@
 import classNames from "classnames";
 import { csvParse } from "d3";
 import React, { useCallback } from "react";
-import { Alert, Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import S from "./UploadFile.module.scss";
 
-function UploadFile({ setData, setLoadingError }) {
+function UploadFile({ setData, setLoading, setLoadingError }) {
   const onDrop = useCallback(
     (acceptedFiles) => {
+      setLoading(true);
       acceptedFiles.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (event) => {
+          setLoading(false);
           setData(csvParse(event.target.result));
+          setLoadingError(null);
         };
         reader.onerror = (error) => {
+          setLoading(false);
           setLoadingError(error);
         };
         reader.readAsText(file);
@@ -51,8 +55,11 @@ function UploadFile({ setData, setLoadingError }) {
       </div>
       <Row>
         <Col md="12">
-          {/* {isDragAccept && <Alert variant={"success"}>Valid file type</Alert>} */}
-          {isDragReject && <Alert variant={"danger"}>Invalid file type!</Alert>}
+          {isDragReject && (
+            <small id="passwordHelp" className="text-danger">
+              Invalid file type
+            </small>
+          )}
         </Col>
       </Row>
     </>
